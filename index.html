@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCAPE THE TERMINAL // v1.0.4</title>
+    <style>
+        :root {
+            --menu-bg: #282b2f;
+            --panel-bg: #282b2f;
+            --text-fg: #e6e7ea;
+            --accent: #b5b8bd;
+            --sub-text: #9da1a7;
+            --btn-hover: #3a3d42;
+            --neon-green: #00ff41;
+        }
+
+        body {
+            background-color: var(--menu-bg);
+            color: var(--text-fg);  
+            font-family: "Avenir", "Segoe UI", sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+    
+        h1 {
+            font-size: 38px;
+            font-weight: normal;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        
+        .terminal-container {
+            width: 90%;
+            max-width: 650px;
+            background: #000;
+            border: 1px solid rgba(181, 184, 189, 0.2);
+            padding: 25px;
+            margin: 10px 0;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+            
+        #terminal-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            font-family: "Menlo", monospace;
+            font-size: 13px;
+            color: var(--accent);
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-family: "Menlo", monospace;
+        }
+                    
+        .prompt { color: var(--text-fg); margin-right: 10px; }
+            
+        #terminal-input {
+            background: transparent;
+            border: none;
+            color: var(--text-fg);
+            font-family: "Menlo", monospace;
+            font-size: 13px;
+            outline: none;
+            width: 100%;
+            text-transform: uppercase;
+        }
+           
+        .mode-label {
+            font-family: "Menlo", monospace;
+            font-size: 13px;
+            color: var(--accent);
+            margin: 20px 0 12px 0;
+        }
+
+        .btn-container {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .round-btn {
+            background: transparent;
+            border: 1px solid rgba(181, 184, 189, 0.3);
+            color: var(--text-fg);
+            font-family: "Menlo", monospace;
+            font-size: 14px;
+            padding: 10px 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .round-btn:hover {
+            background: var(--btn-hover);
+            border-color: var(--text-fg);
+            padding-left: 25px;
+        }
+
+        .round-btn::before {
+            content: "▸";
+            margin-right: 10px;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .round-btn:hover::before {
+            opacity: 1;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-family: "Menlo", monospace;
+            font-size: 10px;
+            color: var(--sub-text);
+            text-align: center;
+        }
+
+        #terminal-history::-webkit-scrollbar { width: 4px; }
+        #terminal-history::-webkit-scrollbar-thumb { background: var(--btn-hover); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ESCAPE THE TERMINAL</h1>
+    </header>
+
+    <div class="mode-label">TERMINAL INTERFACE</div>
+
+    <div class="terminal-container" onclick="document.getElementById('terminal-input').focus()">
+        <div id="terminal-history">--- SYSTEM_v1.0.4_ESTABLISHED ---
+> WELCOME USER.
+> TYPE 'HELP' FOR ACCESS COMMANDS.
+</div>
+        <div class="input-line">
+            <span class="prompt">▸</span>
+            <input type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <div class="mode-label">SELECT MODE</div>
+
+    <div class="btn-container">
+        <div class="round-btn" onclick="addCommand('windows', 'escape_v104.exe')">DOWNLOAD FOR WINDOWS</div>
+        <div class="round-btn" onclick="addCommand('macos', 'escape_v104.zip')">DOWNLOAD FOR MACOS</div>
+        <div class="round-btn" onclick="addCommand('credits')">VIEW CREDITS</div>
+    </div>
+
+    <footer>
+        STARTS AT LEVEL 1 • PRACTICE OPENS SELECTOR<br><br>
+        PRESS ESC TO EXIT
+    </footer>
+
+    <script>
+        const input = document.getElementById('terminal-input');
+        const history = document.getElementById('terminal-history');
+
+        const commands = {
+            'help': "AVAILABLE COMMANDS:\n- WINDOWS: GET PC VERSION\n- MACOS: GET MAC VERSION\n- CREDITS: PROJECT INFO\n- CLEAR: RESET CONSOLE",
+            'credits': "ESCAPE THE TERMINAL\n--------------------\nAUTHOR: dwbgian\nBUILD: TKINTER / PYGAME\nSTATUS: ONLINE",
+            'clear': ""
+        };
+
+        // Funktion für Button-Klicks
+        function addCommand(cmdText, fileName = null) {
+            processCommand(cmdText.toLowerCase(), fileName);
+        }
+
+        function processCommand(cmd, fileName = null) {
+            if (cmd === 'clear') {
+                history.innerHTML = "--- TERMINAL RESET ---\n";
+            } else if (commands[cmd] || cmd === 'windows' || cmd === 'macos') {
+                
+                let output = commands[cmd] || `PREPARING DOWNLOAD FOR ${cmd.toUpperCase()}...`;
+                history.innerHTML += `\n> ${cmd.toUpperCase()}\n${output}\n`;
+
+                // Wenn es ein Download-Befehl ist
+                if (cmd === 'windows' || cmd === 'macos') {
+                    // Falls kein Dateiname via Button kommt, Standard setzen
+                    const fileToDownload = fileName || (cmd === 'windows' ? 'escape_v104.exe' : 'escape_v104.zip');
+                    startDownload(fileToDownload);
+                }
+            } else {
+                history.innerHTML += `\n> ${cmd.toUpperCase()}\nERROR: UNKNOWN COMMAND\n`;
+            }
+            history.scrollTop = history.scrollHeight;
+        }
+
+        function startDownload(url) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = url; 
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            history.innerHTML += `> SYSTEM: INITIATING TRANSFER [${url}]...\n`;
+        }
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                processCommand(input.value.toLowerCase().trim());
+                input.value = "";
+            }
+        });
+    </script>
+</body>
+</html>
